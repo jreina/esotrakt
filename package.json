@@ -1,15 +1,17 @@
 {
-  "name": "abstrakt",
-  "version": "0.0.6",
-  "description": "Create time logs for abstract categories",
-  "main": "index.js",
+  "name": "esotrakt",
+  "version": "0.0.0",
+  "description": "Create logs using an esoteric DSL",
+  "main": "dist/index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "tsc",
     "precommmit": "lint-staged",
-    "prettier": "prettier --write \"**/*.js\""
+    "prettier": "prettier --write \"**/*.ts\"",
+    "start": "npm run build && node dist/index.js"
   },
   "lint-staged": {
-    "*.js": [
+    "*.ts": [
       "prettier --write"
     ]
   },
@@ -25,16 +27,18 @@
     "openurl": "^1.1.1"
   },
   "bin": {
-    "abstrakt": ".\\src\\index.js"
+    "esotrakt": ".\\dist\\index.js"
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/ShittyLabs/abstrakt"
+    "url": "https://github.com/jreina/esotrakt"
   },
-  "homepage": "https://github.com/ShittyLabs/abstrakt",
+  "homepage": "https://github.com/jreina/esotrakt",
   "devDependencies": {
+    "@types/node": "^13.1.2",
     "husky": "^3.1.0",
     "lint-staged": "^9.5.0",
-    "prettier": "^1.19.1"
+    "prettier": "^1.19.1",
+    "typescript": "^3.7.4"
   }
 }
