@@ -53,5 +53,5 @@ switchCase(
     }
   },
   program,
-  program.outputHelp
+  program.outputHelp.bind(program)
 );
