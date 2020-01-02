@@ -1,6 +1,6 @@
 {
   "name": "esotrakt",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "description": "Create logs using an esoteric DSL",
   "main": "dist/index.js",
   "scripts": {
