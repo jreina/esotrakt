@@ -1,6 +1,8 @@
 import GistRA from "../data/GistRA";
 import TokenRA from "../data/TokenRA";
 import GistInfoRA from "../data/GistInfoRA";
+import { hasId } from "../utils/hasId";
+import { not } from "../utils/not";
 
 export default class LogManager {
   constructor() {}
@@ -23,12 +25,22 @@ export default class LogManager {
     const gistId = await this._ensureGist();
     const data = await ra.load(gistId);
 
-    const maxId = data
-      .map(x => +x.split("::")[0])
-      .reduce((a, b) => (a > b ? a : b), 0) + 1;
+    const maxId =
+      data.map(x => +x.split("::")[0]).reduce((a, b) => (a > b ? a : b), 0) + 1;
 
     data.push(`${maxId}::${new Date().getTime()}::${entry}`);
     return ra.update(data, gistId);
+  }
+  async editLogEntry(id: string, entry: string) {
+    const token = await TokenRA.load();
+    const ra = new GistRA(token);
+    const gistId = await this._ensureGist();
+    const data = await ra.load(gistId);
+    const newEntry = `${id}::${new Date().getTime()}::${entry}`;
+
+    const newEntries = data.filter(not(hasId(id))).concat(newEntry);
+
+    return ra.update(newEntries, gistId);
   }
   async listLogEntries() {
     const token = await TokenRA.load();
@@ -46,4 +58,4 @@ export default class LogManager {
     }
     return gistId;
   }
-};
+}
