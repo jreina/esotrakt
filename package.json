@@ -30,7 +30,7 @@
     "openurl": "^1.1.1"
   },
   "bin": {
-    "esotrakt": ".\\dist\\index.js"
+    "esotrakt": "dist/index.js"
   },
   "repository": {
     "type": "git",
