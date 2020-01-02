@@ -5,11 +5,13 @@
   "main": "dist/index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "build": "tsc",
+    "build": "npm run clean && tsc",
+    "clean": "rimraf dist",
     "precommmit": "lint-staged",
     "prepublishOnly": "npm run build",
     "prettier": "prettier --write \"**/*.ts\"",
-    "start": "npm run build && node dist/index.js"
+    "start": "npm run build && node dist/index.js",
+    "debug": "npm run build && node --inspect-brk dist/index.js"
   },
   "lint-staged": {
     "*.ts": [
@@ -40,6 +42,7 @@
     "husky": "^3.1.0",
     "lint-staged": "^9.5.0",
     "prettier": "^1.19.1",
+    "rimraf": "^3.0.0",
     "typescript": "^3.7.4"
   },
   "files": [
