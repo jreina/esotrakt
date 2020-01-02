@@ -8,14 +8,6 @@ const { version } = require("../package.json");
 import formatTable from "./utils/format-table";
 
 program
-  .command("-e <id> [data]")
-  .description("Edit an entry")
-  .action((id: string, data: string) => {
-    const mgr = new LogManager();
-    return mgr.editLogEntry(id, data);
-  });
-
-program
   .name("esotrakt")
   .version(version)
   .option("-a, --append <data>", "append an entry")
