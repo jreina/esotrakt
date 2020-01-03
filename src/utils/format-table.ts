@@ -1,8 +1,6 @@
-const moment = require("moment");
+import * as _ from "lodash";
 
-const prop = (key: string) => (obj: any): any => obj[key];
 const max = (a: number, b: number) => (a > b ? a : b);
-const len = (x: string) => x.length;
 const asString = (x: any) => x.toString();
 
 function padStart(input: string, num: number, char: string) {
@@ -21,50 +19,48 @@ function padEnd(input: string, num: number, char: string) {
 
 function formatRow(
   columnLengths: { [key: string]: number },
-  item: string,
+  item: Array<string>,
   joinChar = " ",
   seperatorChar = "|"
 ) {
-  return Object.entries(item.split("::"))
+  return Object.entries(item)
     .map(([key, value]) =>
       padStart(
-        padEnd(asString(value), columnLengths[key], joinChar),
-        columnLengths[key] + 1,
+        padEnd(asString(value), columnLengths[key] + 1, joinChar),
+        columnLengths[key] + 2,
         joinChar
       )
     )
     .join(seperatorChar);
 }
 
+/**
+ * Someone fix this please
+ * @param items
+ */
 export default function formatTable(items: Array<string>) {
-  const longest = items.reduce(
-    (memo, val) =>
-      memo > val.split("::").length ? memo : val.split("::").length,
-    0
-  );
-  const columns = Array(longest)
-    .fill(0)
-    .map((_, i) => i);
-  const columnLengths = columns.reduce<{ [key: string]: number }>(
-    (memo, val) => {
-      memo[val] =
-        items
-          .map(prop(val.toString()))
-          .concat(val)
-          .map(toString)
-          .map(len)
-          .reduce(max) + 1;
-      return memo;
-    },
-    {}
-  );
+  const entries = items
+    .map(item => item.split("::"))
+    .map(([id, dt, t = "", m1 = "", m2 = ""]) => [id, dt, t, m1, m2]);
 
-  const rows = items.map(item => formatRow(columnLengths, item));
-  const separatorItem = columns.map(_ => '');
+  const cols = _.zip(...entries);
+  const columns = ["id", "dt", "t", "m1", "m2"];
+  const columnLengths = cols.map((col, i) => {
+    const len = col.map(c => c?.toString().length ?? 0).reduce(max, 0);
+    return [i, len];
+  });
+
+  const columnLengthLookup = Object.fromEntries(columnLengths);
+
+  const rows = items
+    .map(item => item.split("::"))
+    .map(([id, dt, t = "", m1 = "", m2 = ""]) => [id, dt, t, m1, m2])
+    .map(item => formatRow(columnLengthLookup, item));
+  const separatorItem = columns.map(_ => "");
 
   const table = [
-    formatRow(columnLengths, ['id', 'dt', 't', 'm'].join("::")),
-    formatRow(columnLengths, separatorItem.join("::"), "-", "+"),
+    formatRow(columnLengthLookup, columns),
+    formatRow(columnLengthLookup, separatorItem, "-", "+"),
     ...rows
   ].join("\n");
   return table;
