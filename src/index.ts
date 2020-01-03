@@ -15,6 +15,10 @@ program
   .option("-v, --view", "view all entries")
   .option("-f, --filter <t>", "filter entries by t")
   .option("-s, --set-gist <id>", "set the Gist ID to use on this computer")
+  .option(
+    "-u, --unfinished",
+    "list start entries without a reference in an end entry"
+  )
   .option("-d, --delete <id>", "delete an entry");
 
 program.parse(process.argv);
@@ -44,6 +48,17 @@ switchCase(
     setGist: id => {
       const mgr = new GistInfoManager();
       return mgr.save(id);
+    },
+    unfinished: async () => {
+      const mgr = new LogManager();
+      const items = (await mgr.listLogEntries()).map(item => item.split("::"));
+      const starts = items.filter(([, , t]) => ["S", "_"].includes(t));
+      const ends = items.filter(([, , t]) => ["E", "."].includes(t));
+      const startsWithoutEnds = starts
+        .filter(([id]) => ends.find(([, , , m1]) => id === m1) === undefined)
+        .map(x => x.join("::"));
+      const table = formatTable(startsWithoutEnds);
+      console.log(table);
     },
     view: async () => {
       const mgr = new LogManager();

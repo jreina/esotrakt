@@ -46,7 +46,7 @@ export default function formatTable(items: Array<string>) {
   const cols = _.zip(...entries);
   const columns = ["id", "dt", "t", "m1", "m2"];
   const columnLengths = cols.map((col, i) => {
-    const len = col.map(c => c?.toString().length ?? 0).reduce(max, 0);
+    const len = col.concat(columns[i]).map(c => c?.toString().length ?? 0).reduce(max, 0);
     return [i, len];
   });
 
