@@ -6,6 +6,7 @@ import LogManager from "./managers/LogManager";
 import GistInfoManager from "./managers/GistInfoManager";
 const { version } = require("../package.json");
 import formatTable from "./utils/format-table";
+import { compile } from "esotrakt-compiler";
 
 program
   .name("esotrakt")
@@ -15,7 +16,8 @@ program
   .option("-v, --view", "view all entries")
   .option("-f, --filter <t>", "filter entries by t")
   .option("-s, --set-gist <id>", "set the Gist ID to use on this computer")
-  .option("-d, --delete <id>", "delete an entry");
+  .option("-d, --delete <id>", "delete an entry")
+  .option("-j, --json", "parse and print entries in JSON format");
 
 program.parse(process.argv);
 
@@ -40,6 +42,12 @@ switchCase(
       const ofT = items.filter(item => item.split("::")[2] === t);
       const table = formatTable(ofT);
       console.log(table);
+    },
+    json: async () => {
+      const mgr = new LogManager();
+      const items = await mgr.listLogEntries();
+      const objects = compile(items.join('\n'));
+      console.log(JSON.stringify(objects));
     },
     setGist: id => {
       const mgr = new GistInfoManager();
