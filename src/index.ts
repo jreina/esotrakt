@@ -17,7 +17,7 @@ program
   .option("-f, --filter <t>", "filter entries by t")
   .option("-s, --set-gist <id>", "set the Gist ID to use on this computer")
   .option("-d, --delete <id>", "delete an entry")
-  .option("-j, --json", "parse and print entries in JSON format");
+  .option("-j, --json", "parse and print entries in JSON format")
   .option(
     "-u, --unfinished",
     "list start entries without a reference in an end entry"
